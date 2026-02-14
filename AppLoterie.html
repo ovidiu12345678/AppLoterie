@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LOTERIE UNGARIA PUTTO • GABY</title>
+
+  <style>
+    :root{
+      --bg1:#0b1220; --bg2:#0d1730;
+      --card: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+
+      --radius: 18px;
+      --radius2: 14px;
+      --gap: 16px;
+      --pad: 14px;
+      --hpad: 14px;
+
+      --hTitle: 34px;
+      --h2: 15px;
+      --sub: 13.5px;
+
+      --gridLeft: 1.05fr;
+      --gridRight: .95fr;
+
+      --numsCols: 6;
+
+      /* input standard */
+      --inputPad: 11px 12px;
+
+      /* input special pentru COTA (mai vizibil) */
+      --oddFont: 18px;
+      --oddPad: 14px 14px;
+      --oddRadius: 14px;
+
+      --btnPad: 11px 14px;
+
+      --titleGlow: 0 0 22px rgba(120,170,255,.35), 0 0 44px rgba(255,120,210,.25);
+      --titleGrad: linear-gradient(90deg, rgba(120,170,255,1), rgba(90,255,190,1), rgba(255,120,210,1));
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 10%, rgba(80, 120, 255, .25), transparent 55%),
+        radial-gradient(1000px 700px at 90% 20%, rgba(255, 120, 200, .18), transparent 55%),
+        radial-gradient(900px 600px at 70% 90%, rgba(90, 255, 190, .14), transparent 60%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      padding: 26px 16px 60px;
+    }
+
+    .wrap{max-width:1100px;margin:0 auto;display:grid;gap:var(--gap)}
+    header{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-end;
+      padding:4px 2px;
+      flex-wrap:wrap
+    }
+
+    .brand{display:flex;flex-direction:column;gap:8px;min-width:0}
+
+    .appTitle{
+      margin:0;
+      font-size: var(--hTitle);
+      line-height: 1.02;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      user-select:none;
+      display:flex;
+      align-items:center;
+      gap:12px;
+
+      background: var(--titleGrad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+
+      text-shadow: var(--titleGlow);
+      filter: drop-shadow(0 16px 30px rgba(0,0,0,.35));
+      white-space:nowrap;
+    }
+
+    .gaby{
+      font-size: calc(var(--hTitle) * 0.42);
+      letter-spacing: 1.6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow:
+        0 10px 26px rgba(0,0,0,.25),
+        0 0 18px rgba(90,255,190,.20),
+        0 0 18px rgba(255,120,210,.18);
+      color: rgba(255,255,255,.95);
+      text-shadow: none;
+      -webkit-text-fill-color: rgba(255,255,255,.95);
+    }
+
+    @media(max-width:420px){
+      .appTitle{white-space:normal;flex-wrap:wrap}
+      .gaby{font-size: 13px; padding: 6px 10px}
+    }
+
+    .sub{color:var(--muted);font-size:var(--sub);max-width:90ch}
+    .pill{
+      padding:10px 12px;border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      color: var(--muted);
+      font-size: 13px;
+      white-space:nowrap;
+      user-select:none;
+    }
+
+    .grid{display:grid;grid-template-columns: var(--gridLeft) var(--gridRight);gap:var(--gap)}
+    @media(max-width:980px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      overflow:hidden;
+      min-width:0;
+    }
+
+    .hd{
+      padding: var(--hpad);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap
+    }
+    .hd h2{margin:0;font-size:var(--h2);letter-spacing:.2px}
+    .bd{padding: var(--pad)}
+
+    label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+
+    input{
+      width:100%;
+      padding: var(--inputPad);
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,16,30,.55);
+      color: var(--text);
+      outline:none;
+    }
+    input:focus{border-color: rgba(120,170,255,.55)}
+
+    /* ✅ INPUT SPECIAL PENTRU COTA (mai mare + mai vizibil) */
+    .oddInput{
+      width: 100%;
+      font-size: var(--oddFont);
+      font-weight: 900;
+      padding: var(--oddPad);
+      border-radius: var(--oddRadius);
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(5,10,22,.55);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+    .oddInput:focus{
+      border-color: rgba(90,255,190,.55);
+      box-shadow:
+        0 0 0 4px rgba(90,255,190,.10),
+        inset 0 0 0 1px rgba(255,255,255,.10);
+    }
+
+    .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;align-items:end}
+    .f{grid-column: span 3}
+    .f.sm{grid-column: span 2}
+    .f.lg{grid-column: span 4}
+    .f.full{grid-column: 1/-1}
+    @media(max-width:980px){ .f{grid-column:span 6}.f.sm{grid-column:span 6}.f.lg{grid-column:span 12} }
+
+    .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    button{
+      border:none;border-radius:14px;padding: var(--btnPad);
+      font-weight:900;cursor:pointer;color:rgba(255,255,255,.92);
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
+      transition: transform .08s ease, filter .15s ease;
+    }
+    button:hover{filter:brightness(1.08)}
+    button:active{transform: translateY(1px) scale(.99)}
+    .primary{background: linear-gradient(135deg, rgba(90,130,255,.85), rgba(255,120,210,.62));border:1px solid rgba(255,255,255,.20)}
+    .ghost{background: rgba(255,255,255,.06)}
+
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color: var(--muted);
+      font-size:12px;white-space:nowrap;
+    }
+
+    .progress{height:10px;width:100%;border-radius:999px;border:1px solid rgba(255,255,255,.14);background: rgba(0,0,0,.20);overflow:hidden}
+    .bar{height:100%;width:0%;background: linear-gradient(90deg, rgba(90,255,190,.7), rgba(120,170,255,.7), rgba(255,120,210,.65));transition:width .15s ease}
+
+    .nums-grid{
+      display:grid;
+      grid-template-columns: repeat(var(--numsCols), minmax(0,1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    /* box mai aerisit */
+    .numBox{
+      padding: 12px;
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.11);
+      background: rgba(255,255,255,.04);
+      min-width:0;
+    }
+    .numBox .id{font-weight:900;opacity:.95;margin-bottom:10px}
+    .miniLabel{color:var(--muted);font-size:11.5px;margin:0 0 8px}
+
+    .table{
+      width:100%;
+      border-collapse:collapse;
+      border-radius: var(--radius2);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      table-layout: fixed;
+    }
+    .table th,.table td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12.5px;vertical-align:top;word-wrap:break-word}
+    .table th{color:rgba(255,255,255,.78);font-weight:900;background:rgba(255,255,255,.05);text-align:left}
+    .table tr:last-child td{border-bottom:none}
+
+    .muted{color:var(--muted)}
+    .warnBox{
+      padding:10px;border-radius: var(--radius2);
+      border:1px solid rgba(255,210,110,.35);
+      background: rgba(255,210,110,.08);
+      color: rgba(255,255,255,.85);
+    }
+    .boxItem{
+      padding:10px;
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      margin-bottom:10px
+    }
+
+    @media(max-width:640px){
+      :root{
+        --oddFont: 19px;
+        --oddPad: 15px 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <h1 class="appTitle">
+          LOTERIE UNGARIA PUTTO
+          <span class="gaby">GABY</span>
+        </h1>
+
+        <div class="sub">
+          Setezi <span class="mono">n</span> (total numere) si <span class="mono">k</span> (extrase).
+          Introduci doar <strong>COTA</strong> pentru fiecare numar (1..n).
+          <br/>
+          Score combinatie: <span class="mono">score = ∏(1 / cota)</span> • Cota totala: <span class="mono">∏(cota)</span>.
+        </div>
+      </div>
+
+      <div class="pill">Loterie • combinari • doar cote • responsive</div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT -->
+      <section class="card">
+        <div class="hd">
+          <h2>Setari</h2>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+            <span class="badge">C(n,k): <strong id="totalComb">—</strong></span>
+            <span class="badge">Procesate: <strong id="processed">—</strong></span>
+            <span class="badge">Trecute: <strong id="passed">—</strong></span>
+            <span class="badge">TOP gasite: <strong id="topFound">—</strong></span>
+          </div>
+        </div>
+
+        <div class="bd">
+          <div class="row">
+            <div class="f sm">
+              <label>n (total numere)</label>
+              <input id="n" type="number" min="2" max="60" value="45" />
+            </div>
+            <div class="f sm">
+              <label>k (extrase)</label>
+              <input id="k" type="number" min="1" max="60" value="6" />
+            </div>
+            <div class="f sm">
+              <label>TOP X combinatii</label>
+              <input id="topX" type="number" min="1" max="5000" value="200" />
+            </div>
+            <div class="f sm">
+              <label>Top M numere finale</label>
+              <input id="topM" type="number" min="1" max="20" value="6" />
+            </div>
+
+            <div class="f lg">
+              <label>Filtru (optional) dupa cota totala</label>
+              <div class="row" style="grid-template-columns: repeat(12,1fr); gap:10px;">
+                <div class="f sm" style="grid-column: span 6;">
+                  <input id="minTotalOdd" type="number" step="0.01" placeholder="Min cota totala (optional)" />
+                </div>
+                <div class="f sm" style="grid-column: span 6;">
+                  <input id="maxTotalOdd" type="number" step="0.01" placeholder="Max cota totala (optional)" />
+                </div>
+              </div>
+            </div>
+
+            <div class="f full">
+              <div class="btns">
+                <button class="ghost" id="fillDefaults">Default (cota = 2.00)</button>
+                <button class="ghost" id="demo">Demo</button>
+                <button class="ghost" id="resize">Genereaza 1..n</button>
+                <button class="primary" id="run">Calculeaza</button>
+              </div>
+            </div>
+
+            <div class="f full">
+              <div class="progress"><div class="bar" id="bar"></div></div>
+              <div class="muted" style="margin-top:8px;font-size:12.5px">
+                Daca C(n,k) e mare, poate dura. Aplicatia tine in memorie doar TOP X (heap).
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <div class="hd" style="padding:0 0 10px; border:none;">
+              <h2 style="font-size:14px;opacity:.95">Numere (1..n) • Cota</h2>
+              <span class="badge">input mare</span>
+            </div>
+            <div id="nums" class="nums-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT -->
+      <section class="card">
+        <div class="hd">
+          <h2>Rezultate</h2>
+          <span class="badge">TOP + aparitii + finale + perechi</span>
+        </div>
+
+        <div class="bd" style="display:grid;gap:12px">
+          <div id="noTopBox" class="warnBox" style="display:none;">
+            TOP gasite = 0. Verifica:
+            1) cotele sa fie > 1.00 la toate numerele
+            2) filtrele Min/Max cota totala sa nu elimine tot
+          </div>
+
+          <div class="card" style="border-radius:var(--radius2);box-shadow:none">
+            <div class="hd" style="border-bottom:1px solid rgba(255,255,255,.08)">
+              <h2>TOP combinatii</h2>
+              <span class="badge">score = ∏(1/cota)</span>
+            </div>
+            <div class="bd" style="padding:0">
+              <table class="table" id="topTable">
+                <thead>
+                  <tr>
+                    <th style="width:50px">#</th>
+                    <th style="width:150px">Score</th>
+                    <th style="width:130px">Cota totala</th>
+                    <th>Numere</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card" style="border-radius:var(--radius2);box-shadow:none">
+            <div class="hd" style="border-bottom:1px solid rgba(255,255,255,.08)">
+              <h2>Aparitii in TOP</h2>
+              <span class="badge">pe numar</span>
+            </div>
+            <div class="bd" style="padding:0">
+              <table class="table" id="statsTable">
+                <thead>
+                  <tr>
+                    <th style="width:70px">Numar</th>
+                    <th style="width:110px">Aparitii</th>
+                    <th style="width:110px">%</th>
+                    <th style="width:120px">Cota</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card" style="border-radius:var(--radius2);box-shadow:none">
+            <div class="hd" style="border-bottom:1px solid rgba(255,255,255,.08)">
+              <h2>Top M numere finale</h2>
+              <span class="badge">dupa aparitii</span>
+            </div>
+            <div class="bd" id="finalBox"><div class="muted">—</div></div>
+          </div>
+
+          <div class="card" style="border-radius:var(--radius2);box-shadow:none">
+            <div class="hd" style="border-bottom:1px solid rgba(255,255,255,.08)">
+              <h2>Perechi sugerate</h2>
+              <span class="badge">1-2, 3-4...</span>
+            </div>
+            <div class="bd" id="pairsBox"><div class="muted">—</div></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+    
+    // ✅ FIX PRINCIPAL - Returnează NaN pentru stringuri goale
+    function toNum(v){
+      const s = String(v ?? "").trim().replace(",", ".");
+      if(s === "") return NaN;  // ← FIX: tratează câmpurile goale corect
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function binomialBigInt(n, k){
+      if(k < 0 || k > n) return 0n;
+      k = Math.min(k, n - k);
+      let res = 1n;
+      for(let i=1; i<=k; i++){
+        res = (res * BigInt(n - (k - i))) / BigInt(i);
+      }
+      return res;
+    }
+
+    function* genComb(n, k){
+      const comb = Array.from({length:k}, (_,i)=>i);
+      while(true){
+        yield comb.slice();
+        let t = k - 1;
+        while(t >= 0 && comb[t] === n - k + t) t--;
+        if(t < 0) return;
+        comb[t]++;
+        for(let i=t+1; i<k; i++) comb[i] = comb[i-1] + 1;
+      }
+    }
+
+    class MinHeap{
+      constructor(cap){ this.cap = cap; this.arr = []; }
+      push(item){
+        if(this.arr.length < this.cap){
+          this.arr.push(item); this.up(this.arr.length-1); return;
+        }
+        if(item.score > this.arr[0].score){ this.arr[0] = item; this.down(0); }
+      }
+      up(i){
+        while(i>0){
+          const p = (i-1)>>1;
+          if(this.arr[i].score >= this.arr[p].score) break;
+          [this.arr[i], this.arr[p]] = [this.arr[p], this.arr[i]];
+          i = p;
+        }
+      }
+      down(i){
+        const n = this.arr.length;
+        while(true){
+          const l = i*2+1, r=i*2+2;
+          let s=i;
+          if(l<n && this.arr[l].score < this.arr[s].score) s=l;
+          if(r<n && this.arr[r].score < this.arr[s].score) s=r;
+          if(s===i) break;
+          [this.arr[i], this.arr[s]] = [this.arr[s], this.arr[i]];
+          i=s;
+        }
+      }
+      sortedDesc(){ return this.arr.slice().sort((a,b)=>b.score-a.score); }
+    }
+
+    function fmtScore(x){
+      if(!Number.isFinite(x)) return "—";
+      if(x === 0) return "0";
+      if(Math.abs(x) < 1e-6) return x.toExponential(3);
+      return x.toPrecision(6);
+    }
+    function fmtOdd(x){
+      if(!Number.isFinite(x)) return "—";
+      if(x > 1e9) return x.toExponential(3);
+      return x.toFixed(3).replace(/\.?0+$/,'');
+    }
+
+    function renderNumbers(n){
+      const box = $("nums");
+      box.innerHTML = "";
+      for(let i=1;i<=n;i++){
+        const div = document.createElement("div");
+        div.className = "numBox";
+        div.innerHTML = `
+          <div class="id mono">Numar ${i}</div>
+          <div class="miniLabel">Cota</div>
+          <input class="o mono oddInput" data-id="${i}" placeholder="2.00" inputmode="decimal" />
+        `;
+        box.appendChild(div);
+      }
+    }
+
+    function readOdds(n){
+      const oInputs = Array.from(document.querySelectorAll(".o"));
+      const odds = new Array(n).fill(NaN);
+      for(const inp of oInputs){
+        const id = parseInt(inp.dataset.id, 10);
+        if(id>=1 && id<=n) odds[id-1] = toNum(inp.value);
+      }
+      return odds;
+    }
+
+    function renderTop(list){
+      const tbody = $("topTable").querySelector("tbody");
+      tbody.innerHTML = "";
+      if(!list.length){
+        tbody.innerHTML = `<tr><td colspan="4" class="muted">—</td></tr>`;
+        return;
+      }
+      list.forEach((x,i)=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="mono">${i+1}</td>
+          <td class="mono">${fmtScore(x.score)}</td>
+          <td class="mono">${fmtOdd(x.totalOdd)}</td>
+          <td class="mono">${x.nums}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderStats(list){
+      const tbody = $("statsTable").querySelector("tbody");
+      tbody.innerHTML = "";
+      if(!list.length){
+        tbody.innerHTML = `<tr><td colspan="4" class="muted">—</td></tr>`;
+        return;
+      }
+      list.forEach(x=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="mono">${x.num}</td>
+          <td class="mono">${x.count}</td>
+          <td class="mono">${x.pct.toFixed(2)}%</td>
+          <td class="mono">${x.o.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderFinal(list){
+      const box = $("finalBox");
+      if(!list.length){ box.innerHTML = `<div class="muted">—</div>`; return; }
+      box.innerHTML = list.map((x,i)=>`
+        <div class="boxItem">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap">
+            <div><strong>#${i+1}</strong> <span class="mono">Numar ${x.num}</span></div>
+            <div class="badge"><strong>${x.count}</strong> • ${x.pct.toFixed(2)}%</div>
+          </div>
+          <div class="muted" style="margin-top:6px;">cota: <span class="mono">${x.o.toFixed(2)}</span></div>
+        </div>
+      `).join("");
+    }
+
+    function renderPairs(final){
+      const box = $("pairsBox");
+      if(final.length < 2){ box.innerHTML = `<div class="muted">—</div>`; return; }
+      const pairs = [];
+      for(let i=0;i+1<final.length;i+=2) pairs.push([final[i], final[i+1]]);
+
+      box.innerHTML = pairs.map((p,i)=>`
+        <div class="boxItem">
+          <div><strong>Pereche #${i+1}:</strong> <span class="mono">${p[0].num}-${p[1].num}</span></div>
+          <div class="muted" style="margin-top:6px;">
+            primul: ${p[0].num} (aparitii ${p[0].count}) • al doilea: ${p[1].num} (aparitii ${p[1].count})
+          </div>
+        </div>
+      `).join("");
+
+      if(final.length % 2 === 1){
+        const last = final[final.length-1];
+        box.innerHTML += `<div class="muted">A ramas nepereche: <span class="mono">${last.num}</span></div>`;
+      }
+    }
+
+    function updateTotal(){
+      const n = clamp(parseInt($("n").value,10)||45, 2, 60);
+      const k = clamp(parseInt($("k").value,10)||6, 1, n);
+      $("k").value = String(k);
+      $("totalComb").textContent = binomialBigInt(n,k).toString();
+    }
+
+    function fillDefaults(){
+      const n = clamp(parseInt($("n").value,10)||45, 2, 60);
+      renderNumbers(n);
+      const oInputs = Array.from(document.querySelectorAll(".o"));
+      oInputs.forEach(inp => inp.value = "2.00");
+      updateTotal();
+    }
+
+    function demo(){
+      const n = clamp(parseInt($("n").value,10)||45, 2, 60);
+      renderNumbers(n);
+      const oInputs = Array.from(document.querySelectorAll(".o"));
+      for(let i=0;i<n;i++){
+        const o = 1.60 + ((i*17)%70)/100; // 1.60..2.29
+        oInputs[i].value = String(o).toFixed(2);
+      }
+      updateTotal();
+    }
+
+    async function run(){
+      const n = clamp(parseInt($("n").value,10)||45, 2, 60);
+      const k = clamp(parseInt($("k").value,10)||6, 1, n);
+      $("k").value = String(k);
+
+      const topX = clamp(parseInt($("topX").value,10)||200, 1, 5000);
+      const topM = clamp(parseInt($("topM").value,10)||6, 1, Math.min(n,20));
+      $("topM").value = String(topM);
+
+      // ✅ FIX: Validare îmbunătățită pentru filtrele Min/Max
+      const minTotalOdd = toNum($("minTotalOdd").value);
+      const maxTotalOdd = toNum($("maxTotalOdd").value);
+
+      // Debug info
+      console.log("minTotalOdd:", minTotalOdd, "isFinite:", Number.isFinite(minTotalOdd));
+      console.log("maxTotalOdd:", maxTotalOdd, "isFinite:", Number.isFinite(maxTotalOdd));
+
+      const odds = readOdds(n);
+      for(let i=0;i<n;i++){
+        const o = odds[i];
+        if(!Number.isFinite(o) || o <= 1.0){
+          alert(`Cota invalida la numarul ${i+1}. Trebuie > 1.00.`);
+          return;
+        }
+      }
+
+      const total = binomialBigInt(n,k);
+      $("totalComb").textContent = total.toString();
+
+      const heap = new MinHeap(topX);
+      let processed = 0;
+      let passed = 0;
+
+      $("processed").textContent = "0";
+      $("passed").textContent = "0";
+      $("topFound").textContent = "0";
+      $("bar").style.width = "0%";
+      $("noTopBox").style.display = "none";
+
+      const totalNum = Number(total);
+      const canPct = Number.isFinite(totalNum) && totalNum > 0;
+
+      const it = genComb(n,k);
+      const chunk = 6000;
+
+      while(true){
+        let done = false;
+
+        for(let c=0;c<chunk;c++){
+          const nx = it.next();
+          if(nx.done){ done=true; break; }
+          const idxs = nx.value;
+
+          let score = 1.0;
+          let totalOdd = 1.0;
+
+          for(const idx of idxs){
+            const o = odds[idx];
+            score *= (1.0 / o);
+            totalOdd *= o;
+          }
+
+          processed++;
+
+          // ✅ FIX: Filtrele se aplică DOAR dacă sunt finite (introduse)
+          if(Number.isFinite(minTotalOdd) && totalOdd < minTotalOdd) continue;
+          if(Number.isFinite(maxTotalOdd) && totalOdd > maxTotalOdd) continue;
+
+          passed++;
+          heap.push({ idxs, score, totalOdd });
+        }
+
+        $("processed").textContent = String(processed);
+        $("passed").textContent = String(passed);
+
+        if(canPct){
+          const pct = Math.min(100, (processed / totalNum) * 100);
+          $("bar").style.width = pct.toFixed(2) + "%";
+        }
+
+        if(done) break;
+        await new Promise(requestAnimationFrame);
+      }
+
+      const best = heap.sortedDesc();
+      $("topFound").textContent = String(best.length);
+
+      if(best.length === 0){
+        $("noTopBox").style.display = "block";
+        renderTop([]);
+        renderStats([]);
+        renderFinal([]);
+        renderPairs([]);
+        return;
+      }
+
+      const topView = best.map(x=>({
+        score: x.score,
+        totalOdd: x.totalOdd,
+        nums: x.idxs.map(i => i+1).join("-")
+      }));
+      renderTop(topView);
+
+      const appear = new Array(n).fill(0);
+      for(const x of best){
+        for(const idx of x.idxs) appear[idx]++;
+      }
+
+      const stats = [];
+      for(let i=0;i<n;i++){
+        const count = appear[i];
+        const pct = (count / best.length) * 100;
+        stats.push({ num:i+1, count, pct, o: odds[i] });
+      }
+      stats.sort((a,b)=> b.count - a.count || a.num - b.num);
+      renderStats(stats);
+
+      const final = stats.slice(0, topM);
+      renderFinal(final);
+      renderPairs(final);
+    }
+
+    $("fillDefaults").addEventListener("click", fillDefaults);
+    $("demo").addEventListener("click", demo);
+
+    $("resize").addEventListener("click", () => {
+      const n = clamp(parseInt($("n").value,10)||45, 2, 60);
+      renderNumbers(n);
+      updateTotal();
+    });
+
+    $("run").addEventListener("click", run);
+
+    $("n").addEventListener("change", () => {
+      const n = clamp(parseInt($("n").value,10)||45, 2, 60);
+      renderNumbers(n);
+      updateTotal();
+    });
+
+    $("k").addEventListener("change", updateTotal);
+
+    // init
+    renderNumbers(45);
+    updateTotal();
+    fillDefaults();
+
+    $("processed").textContent = "—";
+    $("passed").textContent = "—";
+    $("topFound").textContent = "—";
+  </script>
+</body>
+</html>
