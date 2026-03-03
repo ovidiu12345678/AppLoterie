@@ -255,10 +255,50 @@
       margin-bottom:10px
     }
 
+    /* Tablete - 3 coloane */
+    @media(min-width:641px) and (max-width:900px){
+      :root{
+        --numsCols: 3;
+      }
+    }
+
+    /* Mobile - 2 coloane pentru câmpuri mai largi și ușor de folosit */
     @media(max-width:640px){
       :root{
         --oddFont: 19px;
         --oddPad: 15px 14px;
+        --numsCols: 2;
+      }
+
+      /* Face toate inputurile din setări pe toată lățimea pentru ușurință */
+      .f, .f.sm, .f.lg{
+        grid-column: 1/-1 !important;
+      }
+
+      /* Mărește zona de tap pentru inputuri pe mobil */
+      .oddInput{
+        min-height: 54px;
+        font-size: 20px;
+      }
+
+      /* Face toate inputurile mai mari pe mobil */
+      input{
+        min-height: 48px;
+        font-size: 16px;
+        padding: 12px 14px;
+      }
+
+      /* Face label-urile mai vizibile */
+      label, .miniLabel{
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      /* Face butoanele mai mari și mai ușor de apăsat */
+      button{
+        min-height: 48px;
+        padding: 12px 18px;
+        font-size: 15px;
       }
     }
   </style>
